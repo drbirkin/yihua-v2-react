@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { createAuthUserWithEmailAndPassword } from '../../../utils/firebase/firebase.utils'
+import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../../utils/firebase/firebase.utils'
+import FormInput from '../../form-input/form-input.component'
+import Button from '../../button/button.component'
+import './sign-up-form.style.scss'
 
 const defaultFormFields = {
   displayName: '',
@@ -20,18 +23,54 @@ const SignupForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    const { email, password, confirmPassword } = event.target
-
-    if (password === confirmPassword) {
-      createAuthUserWithEmailAndPassword(email, password)
+    if (password !== confirmPassword) {
+      console.error('Incorrect credentials !')
+      return
+    }
+    try {
+      const response = await createAuthUserWithEmailAndPassword(email, password)
+      console.log(response)
+      await createUserDocumentFromAuth(response.user, { displayName })
+    } catch (err) {
+      console.error(err)
     }
   }
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form action="">
-        <label htmlFor="">Display Name</label>
+    <div className='sign-up-container'>
+      <h2>Dont have an account?</h2>
+      <span>Sign up with your email and password</span>
+      <form action="" onSubmit={handleSubmit}>
+        <FormInput
+          label='Display Name'
+          required
+          type="text"
+          onChange={handleChange}
+          name="displayName"
+          value={displayName} />
+        <FormInput
+          label='Email'
+          required
+          type="email"
+          onChange={handleChange}
+          name="email"
+          value={email} />
+        <FormInput
+          label='Password'
+          required
+          type="password"
+          onChange={handleChange}
+          name="password"
+          value={password} />
+        <FormInput
+          label='Confirm Password'
+          required
+          type="password"
+          onChange={handleChange}
+          name="confirmPassword"
+          value={confirmPassword} />
+
+        {/* <label htmlFor="">Display Name</label>
         <input
           required
           type="text"
@@ -62,11 +101,12 @@ const SignupForm = () => {
           onChange={handleChange}
           name="confirmPassword"
           value={confirmPassword}
-        ></input>
+        ></input> */}
 
-        <button type="submit" onClick={handleSubmit}>
+        {/* <button type="submit">
           Sign Up
-        </button>
+        </button> */}
+        <Button children={'Sign Up'} buttonType={'inverted'} />
       </form>
     </div>
   )
