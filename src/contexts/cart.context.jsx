@@ -46,6 +46,19 @@ export const CartItemProvider = ({ children }) => {
   const removeCartItem = (product) => setItem(removeProduct(items, product))
   const quantityHandle = (product, type) =>
     setItem(quantityHandler(items, product, type))
+
+  useEffect(() => {
+    const amount = items.reduce((prev, curr) => prev + curr.quantity, 0)
+    setCartCount(amount)
+    console.log('amount: ', amount)
+  }, [items])
+  useEffect(() => {
+    const total = items.reduce(
+      (prev, curr) => prev + curr.price * curr.quantity,
+      0
+    )
+    setCartToatalPrice(total)
+  }, [items])
   const value = {
     items,
     setCartItem,

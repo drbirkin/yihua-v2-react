@@ -12,11 +12,11 @@ const CartIcon = () => {
     setDropdown(!status)
   }
   // Total items count
-  useEffect(() => {
-    const amount = items.reduce((prev, curr) => prev + curr.quantity, 0)
-    setCartCount(amount)
-    console.log('amount: ', amount)
-  }, [items])
+  // useEffect(() => {
+  //   const amount = items.reduce((prev, curr) => prev + curr.quantity, 0)
+  //   setCartCount(amount)
+  //   console.log('amount: ', amount)
+  // }, [items])
 
   return (
     <div className="cart-icon-container" onClick={cartDropdownHandler}>

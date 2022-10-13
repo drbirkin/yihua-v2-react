@@ -11,13 +11,14 @@ import { CartContext } from '../../contexts/dropdown.context'
 const CartDropdown = () => {
   const { items, cartTotalPrice, setCartToatalPrice } =
     useContext(CartItemContext)
-  useEffect(() => {
-    const total = items.reduce(
-      (prev, curr) => prev + curr.price * curr.quantity,
-      0
-    )
-    setCartToatalPrice(total)
-  }, [items])
+  // ? Should stay in context function, cause will touch other files
+  // useEffect(() => {
+  //   const total = items.reduce(
+  //     (prev, curr) => prev + curr.price * curr.quantity,
+  //     0
+  //   )
+  //   setCartToatalPrice(total)
+  // }, [items])
   const { dropdown, setDropdown } = useContext(CartContext)
   const cartHandler = () => {
     setDropdown(!dropdown)

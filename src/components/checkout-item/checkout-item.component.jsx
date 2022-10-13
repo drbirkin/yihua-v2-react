@@ -4,7 +4,7 @@ import Button from '../button/button.component'
 import './checkout-item.styles.scss'
 
 const CheckoutItem = ({ product }) => {
-  const { name, price, quantity } = product
+  const { name, imageUrl, price, quantity } = product
   const { removeCartItem, quantityHandle } = useContext(CartItemContext)
   const deleteCartItem = () => {
     removeCartItem(product)
@@ -15,13 +15,31 @@ const CheckoutItem = ({ product }) => {
     if (product.quantity <= 0) removeCartItem(product)
   }
   return (
-    <div>
-      {name} {price} {quantity}
-      <div>
-        <Button onClick={quantityManager.bind(product, 'decrease')}>-</Button>
-        <Button onClick={quantityManager.bind(product, 'increase')}>+</Button>
+    <div className="checkout-item-container">
+      <div className="image-container">
+        <img src={imageUrl} alt={name} />
       </div>
-      <Button onClick={deleteCartItem}>Delete</Button>
+      <span className="name">{name}</span>
+      <span className="quantity">
+        <div
+          className="arrow"
+          onClick={quantityManager.bind(product, 'decrease')}
+        >
+          &#10094;
+        </div>
+        {quantity}
+        <div
+          className="arrow"
+          onClick={quantityManager.bind(product, 'increase')}
+        >
+          &#10095;
+        </div>
+      </span>
+      <span className="price">{price}</span>
+      <div className="remove-button" onClick={deleteCartItem}>
+        &#10005;
+      </div>
+      <div className=""></div>
     </div>
   )
 }
