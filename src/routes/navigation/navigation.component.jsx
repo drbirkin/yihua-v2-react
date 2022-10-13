@@ -6,7 +6,7 @@ import './navigation.styles.scss'
 import { signOutUser } from '../../utils/firebase/firebase.utils'
 import CartIcon from '../../components/icons/cart-icon/cart-icon.component'
 import CartDropdown from '../../components/cart-dropdown/cart-dropdown.component'
-import { CartContext } from '../../contexts/cart.context'
+import { CartContext } from '../../contexts/dropdown.context'
 
 const Navigation = () => {
   // access Context
