@@ -7,9 +7,18 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from 'firebase/auth'
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+  getDocs,
+  query,
+} from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCPN8WSYC7wcUwDRP5C1GDBaG30c8Nn_7U',
@@ -35,7 +44,10 @@ export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider)
 
 export const db = getFirestore()
 
-export const createUserDocumentFromAuth = async (userAuth, additionalInformation = {}) => {
+export const createUserDocumentFromAuth = async (
+  userAuth,
+  additionalInformation = {}
+) => {
   if (!userAuth) return
 
   const userDocRef = doc(db, 'users', userAuth.uid)
@@ -51,7 +63,7 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
         displayName,
         email,
         createdAt,
-        ...additionalInformation
+        ...additionalInformation,
       })
     } catch (err) {
       console.error(err)
@@ -59,6 +71,35 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   }
 
   return userDocRef
+}
+
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = collection(db, collectionKey)
+  const batch = writeBatch(db)
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase())
+    batch.set(docRef, object)
+  })
+
+  await batch.commit()
+  console.log('batch done ...')
+}
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'category')
+  const q = query(collectionRef)
+  const querySnapshot = await getDocs(q)
+  const categoryMap = querySnapshot.docs.reduce((sum, docSnapshot) => {
+    const { title, items } = docSnapshot.data()
+    sum[title.toLowerCase()] = items
+    return sum
+  }, {})
+
+  return categoryMap
 }
 
 // Api front layer
@@ -75,4 +116,5 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
 export const signOutUser = async () => signOut(auth)
 
-export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback)
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback)
