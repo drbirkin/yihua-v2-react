@@ -1,4 +1,4 @@
-import './category.styles.scss'
+import { CategoryContainer, Title } from './category.styles.jsx'
 import { useParams } from 'react-router-dom'
 import { useState, useContext, useEffect, Fragment } from 'react'
 
@@ -17,14 +17,14 @@ const Category = () => {
 
   return (
     <Fragment>
-      <h2 className="title">{category.toUpperCase()}</h2>
-      <div className="category-container">
+      <Title>{category.toUpperCase()}</Title>
+      <CategoryContainer>
         {/* Safeguard for async fetching */}
         {products &&
           products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
-      </div>
+      </CategoryContainer>
     </Fragment>
   )
 }

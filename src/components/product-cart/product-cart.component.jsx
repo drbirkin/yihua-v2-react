@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
-import './product-card.styles.scss'
-import Button from '../button/button.component'
+import { ProductCardContainer, Footer } from './product-card.styles.jsx'
+import Button, { BUTTON_TYPE_CLASSES } from '../button/button.component'
 import { CartItemContext } from '../../contexts/cart.context'
 const ProductCard = ({ product }) => {
   const { name, price, imageUrl } = product
@@ -11,18 +11,18 @@ const ProductCard = ({ product }) => {
 
   console.log('items: ', items)
   return (
-    <div className="product-card-container">
+    <ProductCardContainer>
       <img src={imageUrl} alt={name} />
-      <div className="footer">
+      <Footer>
         <span className="name">{name}</span>
         <span className="price">{price}</span>
-      </div>
+      </Footer>
       <Button
         children="Add to Cart"
-        buttonType="inverted"
+        buttonType={BUTTON_TYPE_CLASSES.inverted}
         onClick={cartHandler}
       />
-    </div>
+    </ProductCardContainer>
   )
 }
 
