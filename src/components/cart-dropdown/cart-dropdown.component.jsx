@@ -1,4 +1,9 @@
-import './cart-dropdown.styles.scss'
+import {
+  CartDropdownContainer,
+  EmptyMessage,
+  CartItems,
+  CartItemsTotal,
+} from './cart-dropdown.styles.jsx'
 import Button from '../button/button.component'
 import CartItem from '../cart-iten/cart-item.component'
 import { useEffect, useContext } from 'react'
@@ -9,7 +14,7 @@ import { CartContext } from '../../contexts/dropdown.context'
 // const DropdownToggleHandler = () => useEffect(() => {}, [])
 
 const CartDropdown = () => {
-  const { items, cartTotalPrice, setCartToatalPrice } =
+  const { items, cartTotalPrice, setCartTotalPrice } =
     useContext(CartItemContext)
   // ? Should stay in context function, cause will touch other files
   // useEffect(() => {
@@ -33,15 +38,23 @@ const CartDropdown = () => {
     // DropdownToggleHandler()
     // useEffect(() => console.log(isCartActive, [isCartActive]))
 
-    <div className="cart-dropdown-container">
-      <div className="cart-items">
-        {items.map((item) => (
-          <CartItem product={item} key={item.id}></CartItem>
-        ))}
-      </div>
-      <div className="cart-items-total">
-        <p>Total: ${cartTotalPrice}</p>
-      </div>
+    <CartDropdownContainer>
+      <CartItems>
+        {items.length ? (
+          items.map((item) => (
+            <CartItem product={item} key={item.id}></CartItem>
+          ))
+        ) : (
+          <EmptyMessage>Your Cart is Empty</EmptyMessage>
+        )}
+      </CartItems>
+      {cartTotalPrice ? (
+        <CartItemsTotal>
+          <p>Total: ${cartTotalPrice}</p>
+        </CartItemsTotal>
+      ) : (
+        ''
+      )}
       <Button
         children="Go to Checkout"
         onClick={() => {
@@ -49,7 +62,7 @@ const CartDropdown = () => {
           goToCheckoutHandler()
         }}
       />
-    </div>
+    </CartDropdownContainer>
   )
 }
 
