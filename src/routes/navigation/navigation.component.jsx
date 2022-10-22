@@ -42,6 +42,7 @@ const Navigation = () => {
           )}
           <CartIcon />
         </Navlinks>
+        {console.log(dropdown)}
         {dropdown && <CartDropdown />}
       </NavigationContainer>
       <Outlet />

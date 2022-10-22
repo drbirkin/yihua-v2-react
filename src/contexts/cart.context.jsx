@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useReducer } from 'react'
 
 const addToCartHandler = (items = [], product) => {
+  console.log('items: ', items)
   if (
     items.some((item) => {
       if (item.name === product.name) {
@@ -62,61 +63,117 @@ const cartReducer = (state, action) => {
   const { type, payload } = action
 
   switch (type) {
-    case CART_ACTION_TYPES.SET_CART_COUNT:
-      return { ...state, cartCount: payload }
+    // case CART_ACTION_TYPES.SET_CART_COUNT:
+    //   return { ...state, cartCount: payload }
     case CART_ACTION_TYPES.SET_CART_ITEM:
-      return { ...state, items: payload }
-    case CART_ACTION_TYPES.SET_CART_TOTAL_PRICE:
-      return { ...state, cartTotalPrice: payload }
+      return { ...state, ...payload }
+    // case CART_ACTION_TYPES.SET_CART_TOTAL_PRICE:
+    //   return { ...state, cartTotalPrice: payload }
     default:
-      throw new Error(`Unhandled type ${type} in userReducer`)
+      throw new Error(`Unhandled type ${type} in cartReducer`)
   }
+  // before optimization
+  //   switch (type) {
+  //     case CART_ACTION_TYPES.SET_CART_COUNT:
+  //       return { ...state, cartCount: payload }
+  //     case CART_ACTION_TYPES.SET_CART_ITEM:
+  //       return { ...state, items: payload }
+  //     case CART_ACTION_TYPES.SET_CART_TOTAL_PRICE:
+  //       return { ...state, cartTotalPrice: payload }
+  //     default:
+  //       throw new Error(`Unhandled type ${type} in userReducer`)
+  //   }
 }
 
 export const CartItemProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, INITIAL_STATE)
+
   // const [items, setItem] = useState([])
   // const [cartCount, setCartCount] = useState(0)
   // const [cartTotalPrice, setCartTotalPrice] = useState(0)
 
-  const setCartCount = () =>
-    dispatch({
-      type: CART_ACTION_TYPES.SET_CART_COUNT,
-      payload: state.cartCount,
-    })
-  const setCartTotalPrice = () =>
-    dispatch({
-      type: CART_ACTION_TYPES.SET_CART_TOTAL_PRICE,
-      payload: state.cartTotalPrice,
-    })
-  const setCartItem = (product) =>
-    dispatch({
-      type: CART_ACTION_TYPES.SET_CART_ITEM,
-      payload: addToCartHandler(state.items, product),
-    })
-  const removeCartItem = (product) =>
-    dispatch({
-      type: CART_ACTION_TYPES.SET_CART_ITEM,
-      payload: addToCartHandler(state.items, product),
-    })
-  const quantityHandle = (product, type) =>
-    dispatch({
-      type: CART_ACTION_TYPES.SET_CART_ITEM,
-      payload: quantityHandler(state.items, product, type),
-    })
+  // ? Seperate reducer functions with buissness logics
 
-  useEffect(() => {
-    const amount = state.items.reduce((prev, curr) => prev + curr.quantity, 0)
-    dispatch({ type: CART_ACTION_TYPES.SET_CART_COUNT, payload: amount })
-    console.log('amount: ', amount)
-  }, [state.items])
-  useEffect(() => {
-    const total = state.items.reduce(
+  const updateCartItemReducer = (newCartItems) => {
+    /***
+     * generate newCartTotal
+     * generate newCartCount
+     * dispatch new action with payload = {
+     * newCartItems
+     * newCartTotal
+     * newCartCount
+     * }
+     */
+    const newCartCount = newCartItems.reduce(
+      (prev, curr) => prev + curr.quantity,
+      0
+    )
+    const newCartTotal = newCartItems.reduce(
       (prev, curr) => prev + curr.price * curr.quantity,
       0
     )
-    dispatch({ type: CART_ACTION_TYPES.SET_CART_TOTAL_PRICE, payload: total })
-  }, [state.items])
+
+    dispatch({
+      type: CART_ACTION_TYPES.SET_CART_ITEM,
+      payload: {
+        items: newCartItems,
+        cartTotalPrice: newCartTotal,
+        cartCount: newCartCount,
+      },
+    })
+  }
+
+  // const setCartCount = () =>
+  //   dispatch({
+  //     type: CART_ACTION_TYPES.SET_CART_COUNT,
+  //     payload: state.cartCount,
+  //   })
+  // const setCartTotalPrice = () =>
+  //   dispatch({
+  //     type: CART_ACTION_TYPES.SET_CART_TOTAL_PRICE,
+  //     payload: state.cartTotalPrice,
+  //   })
+  const setCartItem = (product) => {
+    const newCartItems = addToCartHandler(state.items, product)
+    updateCartItemReducer(newCartItems)
+  }
+  const removeCartItem = (product) => {
+    const newCartItems = removeProduct(state.items, product)
+    updateCartItemReducer(newCartItems)
+  }
+  const quantityHandle = (product, type) => {
+    const newCartItems = quantityHandler(state.items, product, type)
+    updateCartItemReducer(newCartItems)
+  }
+  // buissness logic
+  // const setCartItem = (product) =>
+  //   dispatch({
+  //     type: CART_ACTION_TYPES.SET_CART_ITEM,
+  //     payload: addToCartHandler(state.items, product),
+  //   })
+  // const removeCartItem = (product) =>
+  //   dispatch({
+  //     type: CART_ACTION_TYPES.SET_CART_ITEM,
+  //     payload: removeProduct(state.items, product),
+  //   })
+  // const quantityHandle = (product, type) =>
+  //   dispatch({
+  //     type: CART_ACTION_TYPES.SET_CART_ITEM,
+  //     payload: quantityHandler(state.items, product, type),
+  //   })
+
+  // useEffect(() => {
+  //   const amount = state.items.reduce((prev, curr) => prev + curr.quantity, 0)
+  //   dispatch({ type: CART_ACTION_TYPES.SET_CART_COUNT, payload: amount })
+  //   console.log('amount: ', amount)
+  // }, [state.items])
+  // useEffect(() => {
+  //   const total = state.items.reduce(
+  //     (prev, curr) => prev + curr.price * curr.quantity,
+  //     0
+  //   )
+  //   dispatch({ type: CART_ACTION_TYPES.SET_CART_TOTAL_PRICE, payload: total })
+  // }, [state.items])
 
   const value = {
     items: state.items,
@@ -124,9 +181,9 @@ export const CartItemProvider = ({ children }) => {
     removeCartItem,
     quantityHandle,
     cartCount: state.cartCount,
-    setCartCount,
+    // setCartCount,
     cartTotalPrice: state.cartTotalPrice,
-    setCartTotalPrice,
+    // setCartTotalPrice,
   }
 
   //   useEffect(() => {
