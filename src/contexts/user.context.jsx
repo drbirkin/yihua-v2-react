@@ -20,8 +20,8 @@ const useEffectHandler = () =>
     return unsubscribe
   }, [])
 
-// Reducers
-
+// ?Reducers
+// packed into redux folder
 // action
 export const USER_ACTION_TYPES = {
   SET_CURRENT_USER: 'SET_CURRENT_USER',

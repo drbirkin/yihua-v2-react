@@ -52,7 +52,7 @@ export const createUserDocumentFromAuth = async (
 
   const userDocRef = doc(db, 'users', userAuth.uid)
   const userSnapshot = await getDoc(userDocRef)
-  console.log(userSnapshot)
+  console.log('Created categories from database: ', userSnapshot)
 
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth
@@ -93,13 +93,16 @@ export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, 'category')
   const q = query(collectionRef)
   const querySnapshot = await getDocs(q)
-  const categoryMap = querySnapshot.docs.reduce((sum, docSnapshot) => {
-    const { title, items } = docSnapshot.data()
-    sum[title.toLowerCase()] = items
-    return sum
-  }, {})
 
-  return categoryMap
+  return querySnapshot.docs.map((docSnapshot) => docSnapshot.data())
+
+  // ?append into category action js file
+  //   const categoryMap = querySnapshot.docs.reduce((sum, docSnapshot) => {
+  //     const { title, items } = docSnapshot.data()
+  //     sum[title.toLowerCase()] = items
+  //     return sum
+  //   }, {})
+  //   return categoryMap
 }
 
 // Api front layer

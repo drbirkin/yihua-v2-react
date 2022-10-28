@@ -8,13 +8,31 @@ import { useContext, useEffect } from 'react'
 import { CartContext } from '../../../contexts/dropdown.context'
 import { CartItemContext } from '../../../contexts/cart.context'
 
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  selectCartDropdown,
+  selectCartCount,
+} from '../../../store/cart/cart.selector.js'
+import { setCartDropdown } from '../../../store/cart/cart.action.js'
+
 const CartIcon = () => {
-  const { setDropdown, dropdown } = useContext(CartContext)
-  const { items, cartCount, setCartCount } = useContext(CartItemContext)
+  // const { setDropdown, dropdown } = useContext(CartContext)
+  // const { items, cartCount, setCartCount } = useContext(CartItemContext)
+  const dispatch = useDispatch()
+  const dropdown = useSelector(selectCartDropdown)
+  const cartCount = useSelector(selectCartCount)
+
   const cartDropdownHandler = () => {
     const status = dropdown
-    setDropdown(!status)
+    dispatch(setCartDropdown(!status))
   }
+
+  // ?context
+  // const cartDropdownHandler = () => {
+  //   const status = dropdown
+  //   setDropdown(!status)
+  // }
+
   // Total items count
   // useEffect(() => {
   //   const amount = items.reduce((prev, curr) => prev + curr.quantity, 0)

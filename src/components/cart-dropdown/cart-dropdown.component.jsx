@@ -11,11 +11,22 @@ import { useNavigate } from 'react-router-dom'
 
 import { CartItemContext } from '../../contexts/cart.context'
 import { CartContext } from '../../contexts/dropdown.context'
+
+import { useDispatch } from 'react-redux'
+import { setCartDropdown } from '../../store/cart/cart.action.js'
+
+import { useSelector } from 'react-redux'
+import {
+  selectCart,
+  selectCartTotal,
+  selectCartDropdown,
+} from '../../store/cart/cart.selector.js'
+
 // const DropdownToggleHandler = () => useEffect(() => {}, [])
 
 const CartDropdown = () => {
-  const { items, cartTotalPrice, setCartTotalPrice } =
-    useContext(CartItemContext)
+  // const { items, cartTotalPrice, setCartTotalPrice } =
+  //   useContext(CartItemContext)
   // ? Should stay in context function, cause will touch other files
   // useEffect(() => {
   //   const total = items.reduce(
@@ -24,9 +35,17 @@ const CartDropdown = () => {
   //   )
   //   setCartToatalPrice(total)
   // }, [items])
-  const { dropdown, setDropdown } = useContext(CartContext)
+
+  const dispatch = useDispatch()
+
+  const dropdown = useSelector(selectCartDropdown)
+  const cartTotalPrice = useSelector(selectCartTotal)
+  const items = useSelector(selectCart)
+  // const { dropdown, setDropdown } = useContext(CartContext)
   const cartHandler = () => {
-    setDropdown(!dropdown)
+    dispatch(setCartDropdown(!dropdown))
+    // ?context
+    // setDropdown(!dropdown)
   }
 
   const navigate = useNavigate()

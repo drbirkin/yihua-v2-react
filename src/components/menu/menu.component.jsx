@@ -35,7 +35,7 @@ const categories = [
 ]
 
 const Menu = () => {
-  console.log(categories)
+  // console.log(categories)
   return (
     <CategoriesContainer>
       {categories.map((category) => (

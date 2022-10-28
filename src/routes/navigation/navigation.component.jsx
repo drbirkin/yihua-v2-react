@@ -8,22 +8,30 @@ import {
   Navlinks,
   LogoContainer,
 } from './navigation.styles.jsx'
+
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '../../store/user/user.selector'
+import { selectCartDropdown } from '../../store/cart/cart.selector'
+
 import { signOutUser } from '../../utils/firebase/firebase.utils'
 import CartIcon from '../../components/icons/cart-icon/cart-icon.component'
 import CartDropdown from '../../components/cart-dropdown/cart-dropdown.component'
 import { CartContext } from '../../contexts/dropdown.context'
 
 const Navigation = () => {
+  // redux selector return nested object
+  const currentUser = useSelector(selectCurrentUser)
+  const dropdown = useSelector(selectCartDropdown)
   // access Context
-  const { currentUser, setCurrentUser } = useContext(UserContext)
+  // const { currentUser, setCurrentUser } = useContext(UserContext)
   console.log('context: ', currentUser)
   const signOutHandler = async () => {
     const res = await signOutUser()
-    setCurrentUser(null)
+    // setCurrentUser(null)
     console.log(res)
   }
 
-  const { dropdown } = useContext(CartContext)
+  // const { dropdown } = useContext(CartContext)
 
   return (
     <Fragment>
