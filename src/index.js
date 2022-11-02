@@ -8,16 +8,19 @@ import { UserProvider } from './contexts/user.context'
 import { ShopProvider } from './contexts/shop.context'
 import { CartProvider } from './contexts/dropdown.context'
 import { CartItemProvider } from './contexts/cart.context'
+import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
-import { store } from './store/store'
+import { store, persistor } from './store/store'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   // ?Using redux
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <PersistGate loading = {null} persistor={persistor}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </PersistGate>
     </Provider>
     {/*
     // ?Using context

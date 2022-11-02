@@ -7,18 +7,24 @@ import Category from '../category/category.component'
 
 import { getCategoriesAndDocuments } from '../../utils/firebase/firebase.utils'
 import { setCurrentCategory } from '../../store/category/category.action'
+
+// thunk
+import { fetchCategoriesAsync } from '../../store/category/category.action'
+
 const Shop = () => {
   const dispatch = useDispatch()
-
   useEffect(() => {
     console.log('effect fired getting shop data: ')
     // Wrap Async function
-    const getCategoriesMap = async () => {
-      const categoriesArray = await getCategoriesAndDocuments()
-      // console.log('array: ', categoriesArray)
-      dispatch(setCurrentCategory(categoriesArray))
-    }
-    getCategoriesMap()
+    // const getCategoriesMap = async () => {
+    // const categoriesArray = await getCategoriesAndDocuments()
+    // dispatch(setCurrentCategory(categoriesArray))
+
+    // }
+    // getCategoriesMap()
+
+    //? thunk calling up async actions
+    dispatch(fetchCategoriesAsync())
   }, [])
   return (
     <Routes>

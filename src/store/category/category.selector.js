@@ -20,6 +20,11 @@ export const categorySelector = createSelector([selectCategories], (shop) => {
   }, {})
 })
 
+// spinner
+export const selectSpinner = createSelector([selectCategoryReducer], (shop) => {
+  return shop.isLoading
+})
+
 // ?default selector
 // export const categorySelector = (state) => {
 //   console.log('category selector fired')
